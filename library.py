@@ -1,19 +1,31 @@
 import sqlite3
 
-conn = sqlite3.connect("library.db")
+file = "library.db"
+
+try:
+    conn = sqlite3.connect(file)
+    print("database formed")
+except:
+    print("database not formed")
+
 cursor = conn.cursor()
 
 cursor.execute("""
-CREATE TABLE books (
-    book_id INTEGER PRIMARY KEY,
-    title TEXT NOT NULL,
-    author TEXT NOT NULL,
-    genre TEXT,
-    available INTEGER DEFAULT 1
-)
-""")
+            CREATE TABLE Books(
+            Book_id INTEGER PRIMARY KEY,
+            Title TEXT,
+            Author TEXT,
+            Genre TEXT,
+            Available BOOLEAN)
+            """)
 
+cursor.execute("""
+            CREATE TABLE Author(
+            First_name TEXT,
+            Last_name TEXT,
+            Book_id INTEGER
+            PRIMARY KEY(First_name, Last_name),
+            FOREIGN KEY(Book_id) REFERENCES Books(Book_id))
+            """)
 conn.commit()
 conn.close()
-
-print("Database created successfully!")
