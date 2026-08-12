@@ -1,31 +1,47 @@
 import sqlite3
+import sys
 
-file = "library.db"
+print("1. See a which books you've borrowed"\
+      " 2. See all the available books of a genre")
 
-try:
-    conn = sqlite3.connect(file)
-    print("database formed")
-except:
-    print("database not formed")
+user_option = input("Please pick an option:")
 
-cursor = conn.cursor()
 
-cursor.execute("""
-            CREATE TABLE Books(
-            Book_id INTEGER PRIMARY KEY,
-            Title TEXT,
-            Author TEXT,
-            Genre TEXT,
-            Available BOOLEAN)
-            """)
+#Return a list of all the books a specified member has borrowed 
+def borrowed_books(conn, Member_id):
+if user_option == 1:    
+    
+        user_id = print("What is your Member_id?")
+        borrowed_books(conn, user_id)
+        query = ('''
+                SELECT Title, First_name, Last_name
+                FROM Books
+                JOIN Borrow ON Books.book_id = Borrow.book_id
+                JOIN Members ON Borrow.Member_id = Members.Member_id
+                WHERE Members.Member_id = ?''')
+        cursor = conn.execute(query, (Member_id,))
+        return cursor.fetchall()
 
-cursor.execute("""
-            CREATE TABLE Author(
-            First_name TEXT,
-            Last_name TEXT,
-            Book_id INTEGER
-            PRIMARY KEY(First_name, Last_name),
-            FOREIGN KEY(Book_id) REFERENCES Books(Book_id))
-            """)
-conn.commit()
-conn.close()
+
+
+
+
+
+#Return a list of all the available books in the specofoc genre
+elif user_option == 2:
+    def book_genre(conn, Genre):
+        user_genre = print("Which genre would you like to search for?", sys.argv)
+        book_genre(conn, user_genre)
+        query = (''' 
+                SELECT Title, Author 
+                FROM Books
+                JOIN Borrow ON Books.Book_id = Borrow.Book_id
+                WHERE Genre = ?
+                ''')
+        cursor = conn.execute(query, (Genre,))
+        return cursor.fetchall()
+
+
+conn = sqlite3.connect("library.db")
+print(borrowed_books(conn,2))
+#print(book_genre(conn, "Romance"))
