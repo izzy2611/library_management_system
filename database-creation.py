@@ -65,8 +65,9 @@ borrowed = [
         ("3/5/23", "3/6/23", "23/5/23", True, 2, 4),
         ("5/10/24", "5/11/24", "N/A", False, 5, 7),
         ("25/2/22", "25/3/22", "24/3/22", True, 2 ,1),
-        ("7/8/21", "7/9/21", "12/9/21", True, 8, 3)
-        ]
+        ("7/8/21", "7/9/21", "12/9/21", True, 8, 3),
+        ("11/8/24", "11/9/24", "N/A", False, 3, 2)
+         ]
 
 cursor.executemany("""
 INSERT INTO Borrow(Date_borrowed, Due_date, Return_date, Available, Member_id, Book_id)
