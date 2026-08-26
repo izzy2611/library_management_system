@@ -10,7 +10,7 @@ user_option = input("Please pick an option:")
 #Return a list of all the books a specified member has borrowed 
 def borrowed_books(conn, Member_id):
         query = ('''
-                SELECT Title, First_name, Last_name
+                SELECT DISTINCT First_name, Last_name, Title, Date_Borrowed
                 FROM Books
                 JOIN Borrow ON Books.book_id = Borrow.book_id
                 JOIN Members ON Borrow.Member_id = Members.Member_id
@@ -28,13 +28,13 @@ if user_option == " 1":
 #Return a list of all the available books in the specific genre
 def book_genre(conn, Genre):
         query = (''' 
-                SELECT Title, Author 
+               SELECT DISTINCT Title, Author 
                 FROM Books
-                JOIN Borrow ON Books.Book_id = Borrow.Book_id
-                WHERE Genre = ?
+                LEFT JOIN Borrow ON Books.Book_id = Borrow.Book_id
+                WHERE Genre = ? AND Return_date != "N/A"
                 ''')
+ 
         cursor = conn.execute(query, (Genre,))
-        print(cursor.fetchall())
         return cursor.fetchall()
         
 
@@ -46,4 +46,21 @@ if user_option == " 2":
 #print(borrowed_books(conn,2))
 #print(book_genre(conn, "Romance"))
 
-#Returns if a book is available or not and when it was returned
+#Allows the user to borrow a book
+def take_out_book (conn):
+        query = ('''
+        SELECT Title 
+        FROM Books
+        LEFT JOIN Borrow ON Books.Book_id = Borrow.Book_id
+        WHERE Return_date != "N/A" OR Return_date IS NULL
+        ''')
+        print("Available books:")
+        cursor = conn.execute(query,)
+        print(cursor.fetchall())
+
+conn = sqlite3.connect("library.db")
+if user_option == " 3":
+        take_out_book(conn)
+        user_book = input("What book would you like to borrow?")
+        print(take_out_book(conn, user_book))
+        
