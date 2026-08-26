@@ -19,17 +19,14 @@ def borrowed_books(conn, Member_id):
         return cursor.fetchall()
 
 conn = sqlite3.connect("library.db")
-if user_option == "1":    
+if user_option == " 1":    
         user_id = input("What is your Member_id?")
         print(borrowed_books(conn, user_id))
  
 
 
-#Return a list of all the available books in the specofoc genre
+#Return a list of all the available books in the specific genre
 def book_genre(conn, Genre):
-    if user_option == 2:
-        user_genre = print("Which genre would you like to search for?", sys.argv)
-        book_genre(conn, user_genre)
         query = (''' 
                 SELECT Title, Author 
                 FROM Books
@@ -37,9 +34,16 @@ def book_genre(conn, Genre):
                 WHERE Genre = ?
                 ''')
         cursor = conn.execute(query, (Genre,))
+        print(cursor.fetchall())
         return cursor.fetchall()
+        
 
 
 conn = sqlite3.connect("library.db")
+if user_option == " 2":
+        user_genre = input("What type of genre would you like to search for?")
+        print(book_genre(conn, user_genre))
 #print(borrowed_books(conn,2))
 #print(book_genre(conn, "Romance"))
+
+#Returns if a book is available or not and when it was returned

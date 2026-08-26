@@ -19,10 +19,21 @@ cursor.execute("""
             """)
 
 books = [
-    ("Dune", "Frank Herbert", "Science Fiction"),
     ("1984", "George Orwell", "Dystopian"),
+    ("The Hunger Games", "Suzanne Collins", "Dystopian"),
+    ("Lord of the Flies", "William Golding", "Dystopian"),
     ("The Hobbit", "J.R.R. Tolkien", "Fantasy"),
-    ("Pride and Prejudice", "Jane Austen", "Romance")
+    ("The Lion, the Witch and the Wardrobe", "C.S. Lewis", "Fantasy"),
+    ("Harry Potter", "J.K. Rowling", "Fantasy"),
+    ("Pride and Prejudice", "Jane Austen", "Romance"),
+    ("Wuthering Heights", "Emily Brönte", "Romance"),
+    ("Gone with the Wind", "Margaret Mitchell", "Romance"),
+    ("The Haunting of Hill House", "Shirley Jackson", "Horror"),
+    ("The Shining", "Stephen King", "Horror"),
+    ("Dracular", "Bram Stoker", "Horror"),
+    ("The Hound of Baskervilles", "Aurther Conan Doyle", "Mystery"),
+    ("Muder on the Orient Express", "Agatha Christie", "Mystery"),
+    ("The Da Vinci Code", "Dan Brown", "Mystery")
 ]
 
 cursor.executemany("""
