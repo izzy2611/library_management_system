@@ -1,8 +1,9 @@
 import sqlite3
 import sys
+from datetime import datetime, timedelta
 
-print("1. See a which books you've borrowed"\
-      " 2. See all the available books of a genre")
+
+print(" 1. See a which books you've borrowed \n 2. See all the available books of a genre \n 3. Take out a book")
 
 user_option = input("Please pick an option:")
 
@@ -19,7 +20,7 @@ def borrowed_books(conn, Member_id):
         return cursor.fetchall()
 
 conn = sqlite3.connect("library.db")
-if user_option == " 1":    
+if user_option == "1":    
         user_id = input("What is your Member_id?")
         print(borrowed_books(conn, user_id))
  
@@ -31,7 +32,7 @@ def book_genre(conn, Genre):
                SELECT DISTINCT Title, Author 
                 FROM Books
                 LEFT JOIN Borrow ON Books.Book_id = Borrow.Book_id
-                WHERE Genre = ? AND Return_date != "N/A"
+                WHERE Genre = ? AND Books.Available == True
                 ''')
  
         cursor = conn.execute(query, (Genre,))
@@ -40,27 +41,62 @@ def book_genre(conn, Genre):
 
 
 conn = sqlite3.connect("library.db")
-if user_option == " 2":
+if user_option == "2":
         user_genre = input("What type of genre would you like to search for?")
         print(book_genre(conn, user_genre))
 #print(borrowed_books(conn,2))
 #print(book_genre(conn, "Romance"))
 
 #Allows the user to borrow a book
-def take_out_book (conn):
+def take_out_book (conn, Member_id):
+
+        #Selects all available books
         query = ('''
-        SELECT Title 
+        SELECT  Books.Book_id, Title 
         FROM Books
         LEFT JOIN Borrow ON Books.Book_id = Borrow.Book_id
         WHERE Return_date != "N/A" OR Return_date IS NULL
         ''')
-        print("Available books:")
-        cursor = conn.execute(query,)
+        cursor = conn.execute(query)
+
+        #Displays available books
+        print("Available Books:")
+        for book in cursor.fetchall():
+                print(book)
+        
+        Book_id=input("Please enter the number of the book you would like to borrow?")
+
+        #Calculates borrow date and return date
+        borrow_date = datetime.now().date()
+        due_date = borrow_date + timedelta(days=30)
+        borrow_date = borrow_date.strftime("%d/%m/%y")
+        due_date = due_date.strftime("%d/%m/%y")
+
+        #Inserts this information into the borrow table 
+        query = ('''
+        INSERT INTO Borrow(Date_borrowed, Due_date, Return_date, Member_id, Book_id)
+        VALUES (?,?,?,?,?)
+        ''')
+
+        conn.execute(query, (
+        borrow_date,
+        due_date,
+        "N/A",
+        Member_id,
+        Book_id
+        ))
+
+        query = (''' 
+                UPDATE Books
+                SET Available = False
+                WHERE Books.book_id = Book_id
+        ''')
+        conn.execute(query,)
         print(cursor.fetchall())
+        conn.commit()
 
 conn = sqlite3.connect("library.db")
-if user_option == " 3":
-        take_out_book(conn)
-        user_book = input("What book would you like to borrow?")
-        print(take_out_book(conn, user_book))
+if user_option == "3":
+        member_id = input("What is your member id?")
+        print(take_out_book(conn, member_id))
         
