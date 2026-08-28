@@ -2,9 +2,8 @@ import sqlite3
 import sys
 from datetime import datetime, timedelta
 
-
+#Displays options and prompts the user to pick one
 print(" 1. See a which books you've borrowed \n 2. See all the available books of a genre \n 3. Take out a book")
-
 user_option = input("Please pick an option:")
 
 
@@ -19,6 +18,7 @@ def borrowed_books(conn, Member_id):
         cursor = conn.execute(query, (Member_id,))
         return cursor.fetchall()
 
+#connects to the database and calls the function 'borrowed_books' using their member id 
 conn = sqlite3.connect("library.db")
 if user_option == "1":    
         user_id = input("What is your Member_id?")
@@ -39,18 +39,17 @@ def book_genre(conn, Genre):
         return cursor.fetchall()
         
 
-
+#connects to the database and calls the function 'book_genre' based on user input
 conn = sqlite3.connect("library.db")
 if user_option == "2":
         user_genre = input("What type of genre would you like to search for?")
         print(book_genre(conn, user_genre))
-#print(borrowed_books(conn,2))
-#print(book_genre(conn, "Romance"))
+
 
 #Allows the user to borrow a book
 def take_out_book (conn, Member_id):
 
-        #Selects all available books
+        #Selects all available books 
         query = ('''
         SELECT  Books.Book_id, Title 
         FROM Books
@@ -59,7 +58,7 @@ def take_out_book (conn, Member_id):
         ''')
         cursor = conn.execute(query)
 
-        #Displays available books
+        #Displays available books 
         print("Available Books:")
         for book in cursor.fetchall():
                 print(book)
@@ -78,6 +77,7 @@ def take_out_book (conn, Member_id):
         VALUES (?,?,?,?,?)
         ''')
 
+        #Puts the values into the columns
         conn.execute(query, (
         borrow_date,
         due_date,
@@ -95,6 +95,7 @@ def take_out_book (conn, Member_id):
         print(cursor.fetchall())
         conn.commit()
 
+##connects to the database and calls the function 'take_out_book' based on member id
 conn = sqlite3.connect("library.db")
 if user_option == "3":
         member_id = input("What is your member id?")
